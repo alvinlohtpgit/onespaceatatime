@@ -10,6 +10,7 @@ One Thing At a Time is a focused to-do application built with Vue 3, designed to
     - Users can add, edit, delete, and reorder tasks.
     - The first item in the list is always displayed in a prominent "Doing Now" box at the top of the UI.
     - Drag-and-drop reordering is implemented using vue.draggable.next.
+    - The user can click on a "Pop-Out" icon which will render another browser window with the same task list but as a minimalistic browser window with little to no windows decoration except for vertical scrollbars if the page is long. 
 
 2. **Offline-First Data Storage**
     - All tasks are stored locally using PouchDB.
@@ -39,6 +40,42 @@ One Thing At a Time is a focused to-do application built with Vue 3, designed to
     - All interactive elements must be keyboard accessible.
     - Use ARIA roles and labels where appropriate.
     - Responsive design for mobile and desktop.
+
+8. **Focus-Mode Lockdown**
+    - Users can activate a "Focus Lock" mode that hides all tasks except the current "Doing Now" item.
+    - While in Focus Lock, the user cannot view or reorder the rest of the list until the current task is completed or the mode is explicitly unlocked.
+    - This helps prevent context switching and impulsive re-prioritization.
+
+9. **Gentle Task Nudging / Smart Suggestions**
+    - If a task remains in the "Doing Now" position for an unusually long time (configurable), the app gently suggests taking a break, splitting the task, or moving it down the list.
+    - Optionally, the app can suggest breaking large tasks into subtasks.
+    - These nudges are designed to help users avoid overwhelm and encourage steady progress.
+
+10. **Context-Aware Task Notes**
+    - Each task can have additional fields: "Next Action" and "Why this matters".
+    - These fields are displayed prominently in the "Doing Now" box.
+    - This feature helps users maintain motivation and clarity, especially for tasks that span multiple sessions.
+
+11. **Adaptive Pomodoro Recommendations**
+    - The app analyzes user focus and break patterns over time.
+    - It suggests optimal Pomodoro and break durations based on the user's historical focus sessions (e.g., "You seem to focus best in 22-minute bursts—want to try that?").
+    - Users can accept or ignore these personalized recommendations.
+
+12. **Smart Next Task Recommendation (AI)**
+    - The app uses AI to analyze the user's task history, completion patterns, and task metadata to suggest the most suitable next task.
+    - Recommendations are shown contextually, helping users decide what to work on next.
+
+13. **Priority Prediction (AI)**
+    - AI assigns or suggests priorities to tasks using factors like due dates, importance, frequency of postponement, and user-defined goals.
+    - The app can prompt users to move high-priority or overdue tasks to the top of the list.
+
+14. **Effort & Time Estimation (AI)**
+    - The app learns from the user's past task durations and completion rates to estimate how long new or similar tasks might take.
+    - These estimates help users plan their day more realistically and set Pomodoro timers accordingly.
+
+15. **Natural Language Task Input with AI Enhancement**
+    - When users add tasks in natural language, the AI parses and enriches them—extracting deadlines, priorities, and suggesting subtasks.
+    - Example: User types "Finish report by Friday, needs charts and summary." The app creates a task with a deadline and subtasks for "Add charts" and "Write summary."
 
 ## Implementation Details
 
