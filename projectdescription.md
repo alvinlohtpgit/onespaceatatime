@@ -96,6 +96,7 @@ One Thing At a Time is a focused to-do application built with Vue 3, designed to
 - **Add Task**: Input and button to add new tasks
 - **Pomodoro Timer**: Shown when enabled, with controls and settings
 - **Completed Tasks**: Collapsible section (optional for MVP)
+- **Color theme**: Please use color theme of #ffa90a, #ffd793, #ffffff, #999999, #262626 for the application. Textual elements should use the shades of grey and only buttons and highlights should be the brighter shades of orange.
 
 ### 4. Drag-and-Drop
 - Use `<draggable v-model="tasks" item-key="id">` for the task list

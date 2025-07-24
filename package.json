@@ -9,9 +9,20 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@kinde-oss/kinde-auth-pkce-js": "^4.3.0",
+    "@primevue/themes": "^4.3.6",
+    "buffer": "^6.0.3",
+    "events": "^3.3.0",
     "pinia": "^3.0.3",
+    "pouchdb": "^9.0.0",
+    "pouchdb-find": "^9.0.0",
+    "primeicons": "^7.0.0",
+    "primevue": "^4.3.6",
+    "stream-browserify": "^3.0.0",
+    "util": "^0.12.5",
     "vue": "^3.5.17",
-    "vue-router": "^4.5.1"
+    "vue-router": "^4.5.1",
+    "vuedraggable": "^4.1.0"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^6.0.0",

@@ -1,0 +1,94 @@
+:root {
+  /* Custom color scheme */
+  --primary-color: #ffa90a;
+  --primary-color-hover: #ff9500;
+  --secondary-color: #ffd793;
+  --secondary-color-hover: #ffc56a;
+  --text-primary: #262626;
+  --text-secondary: #999999;
+  --background-color: #ffffff;
+  
+  /* Override PrimeVue variables */
+  --primary-50: #fff9e6;
+  --primary-100: #fff3cc;
+  --primary-200: #ffe799;
+  --primary-300: #ffdb66;
+  --primary-400: #ffcf33;
+  --primary-500: #ffa90a;
+  --primary-600: #ff9500;
+  --primary-700: #e68600;
+  --primary-800: #cc7700;
+  --primary-900: #b36800;
+  
+  --surface-0: #ffffff;
+  --surface-50: #fafafa;
+  --surface-100: #f5f5f5;
+  --surface-200: #e5e5e5;
+  --surface-300: #d4d4d4;
+  --surface-400: #a3a3a3;
+  --surface-500: #737373;
+  --surface-600: #525252;
+  --surface-700: #404040;
+  --surface-800: #262626;
+  --surface-900: #171717;
+  
+  --gray-50: #fafafa;
+  --gray-100: #f5f5f5;
+  --gray-200: #e5e5e5;
+  --gray-300: #d4d4d4;
+  --gray-400: #a3a3a3;
+  --gray-500: #737373;
+  --gray-600: #525252;
+  --gray-700: #404040;
+  --gray-800: #262626;
+  --gray-900: #171717;
+}
+
+.p-button {
+  background: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.p-button:enabled:hover {
+  background: var(--primary-color-hover);
+  border-color: var(--primary-color-hover);
+}
+
+.p-button-secondary {
+  background: var(--secondary-color);
+  border-color: var(--secondary-color);
+  color: var(--text-primary);
+}
+
+.p-button-secondary:enabled:hover {
+  background: var(--secondary-color-hover);
+  border-color: var(--secondary-color-hover);
+}
+
+.p-inputtext:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 0.2rem rgba(255, 169, 10, 0.25);
+}
+
+.p-checkbox .p-checkbox-box.p-highlight {
+  border-color: var(--primary-color);
+  background: var(--primary-color);
+}
+
+.p-radiobutton .p-radiobutton-box.p-highlight {
+  border-color: var(--primary-color);
+  background: var(--primary-color);
+}
+
+body {
+  color: var(--text-primary);
+  background-color: var(--background-color);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text-primary);
+}
+
+p {
+  color: var(--text-secondary);
+}

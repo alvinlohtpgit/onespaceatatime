@@ -12,7 +12,25 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url))
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
+      'events': 'events',
+      'util': 'util',
+      'stream': 'stream-browserify',
+      'buffer': 'buffer'
     },
   },
+  define: {
+    global: 'globalThis',
+    'process.env': {},
+    'process.nextTick': 'queueMicrotask'
+  },
+  optimizeDeps: {
+    include: ['pouchdb', 'pouchdb-find', 'events', 'util', 'buffer'],
+    exclude: []
+  },
+  build: {
+    commonjsOptions: {
+      transformMixedEsModules: true
+    }
+  }
 })
