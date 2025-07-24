@@ -108,22 +108,35 @@ class DatabaseService {
   }
 
   async createIndexes() {
+    if (!this.db) return
+    
     try {
       // Index for tasks by username and order
-      await this.db.createIndex({
+      const orderIndexResult = await this.db.createIndex({
         index: {
           fields: ['type', 'username', 'order']
         }
       })
+      console.log('DatabaseService: Order index created:', orderIndexResult)
 
       // Index for completed tasks
-      await this.db.createIndex({
+      const completedIndexResult = await this.db.createIndex({
         index: {
           fields: ['type', 'username', 'completed']
         }
       })
+      console.log('DatabaseService: Completed index created:', completedIndexResult)
+
+      // Index for completed tasks with completedAt for sorting
+      const completedAtIndexResult = await this.db.createIndex({
+        index: {
+          fields: ['type', 'username', 'completed', 'completedAt']
+        }
+      })
+      console.log('DatabaseService: CompletedAt index created:', completedAtIndexResult)
+
     } catch (error) {
-      console.error('Error creating indexes:', error)
+      console.error('DatabaseService: Error creating indexes:', error)
     }
   }
 
@@ -136,32 +149,90 @@ class DatabaseService {
 
   // User-scoped operations
   async getUserTasks(username) {
+    console.log('DatabaseService: getUserTasks called for username:', username)
+    
     const db = this.getDB()
-    const result = await db.find({
-      selector: {
-        type: 'task',
-        username: username,
-        completed: false
-      },
-      sort: ['order']
-    })
-    return result.docs
+    
+    // Ensure indexes are created before querying
+    await this.createIndexes()
+    
+    try {
+      const result = await db.find({
+        selector: {
+          type: 'task',
+          username: username,
+          completed: false
+        },
+        sort: [{'order': 'asc'}]
+      })
+      
+      console.log('DatabaseService: Found', result.docs.length, 'tasks for user:', username)
+      console.log('DatabaseService: Tasks:', result.docs)
+      
+      return result.docs
+    } catch (error) {
+      console.warn('DatabaseService: Error with sorted query, trying without sort:', error)
+      
+      // Fallback: get tasks without sorting and sort manually
+      const result = await db.find({
+        selector: {
+          type: 'task',
+          username: username,
+          completed: false
+        }
+      })
+      
+      // Sort manually by order field
+      const sortedDocs = result.docs.sort((a, b) => (a.order || 0) - (b.order || 0))
+      
+      console.log('DatabaseService: Found', sortedDocs.length, 'tasks for user (manual sort):', username)
+      
+      return sortedDocs
+    }
   }
 
   async getCompletedTasks(username) {
     const db = this.getDB()
-    const result = await db.find({
-      selector: {
-        type: 'task',
-        username: username,
-        completed: true
-      },
-      sort: [{ completedAt: 'desc' }]
-    })
-    return result.docs
+    
+    // Ensure indexes are created before querying
+    await this.createIndexes()
+    
+    try {
+      const result = await db.find({
+        selector: {
+          type: 'task',
+          username: username,
+          completed: true
+        },
+        sort: [{ completedAt: 'desc' }]
+      })
+      return result.docs
+    } catch (error) {
+      console.warn('DatabaseService: Error with sorted completed tasks query, trying without sort:', error)
+      
+      // Fallback: get tasks without sorting and sort manually
+      const result = await db.find({
+        selector: {
+          type: 'task',
+          username: username,
+          completed: true
+        }
+      })
+      
+      // Sort manually by completedAt field (newest first)
+      const sortedDocs = result.docs.sort((a, b) => {
+        const dateA = new Date(a.completedAt || 0)
+        const dateB = new Date(b.completedAt || 0)
+        return dateB - dateA
+      })
+      
+      return sortedDocs
+    }
   }
 
   async createTask(username, taskData) {
+    console.log('DatabaseService: createTask called with username:', username, 'taskData:', taskData)
+    
     const db = this.getDB()
     const timestamp = Date.now()
     const uuid = Math.random().toString(36).substring(2, 15)
@@ -177,7 +248,12 @@ class DatabaseService {
       ...taskData
     }
     
-    return await db.put(task)
+    console.log('DatabaseService: Creating task document:', task)
+    
+    const result = await db.put(task)
+    console.log('DatabaseService: Task created with result:', result)
+    
+    return result
   }
 
   async updateTask(taskId, updates) {

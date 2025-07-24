@@ -8,7 +8,7 @@
             <template #content>
               <div class="welcome-content">
                 <i class="pi pi-inbox welcome-icon"></i>
-                <h2>Welcome to One Space At a Time!</h2>
+                <h2>Welcome to One Thing at a Time!</h2>
                 <p>You don't have any tasks yet. Add your first task to get started.</p>
                 <AddTask />
               </div>
@@ -166,6 +166,7 @@ const disableFocusMode = async () => {
 
 .dashboard-content {
   padding: 2rem;
+  min-width: 1200px;
   max-width: 1400px;
   margin: 0 auto;
 }
@@ -176,10 +177,19 @@ const disableFocusMode = async () => {
   gap: 2rem;
 }
 
+.welcome-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 60vh;
+}
+
 .welcome-card {
-  max-width: 600px;
-  margin: 4rem auto 0;
+  max-width: 650px;
+  width: 100%;
+  margin: 0 auto;
   text-align: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
 .welcome-content {

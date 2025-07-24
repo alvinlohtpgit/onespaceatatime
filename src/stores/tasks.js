@@ -45,19 +45,35 @@ export const useTasksStore = defineStore('tasks', () => {
   }
 
   async function createTask(taskData) {
-    if (!authStore.username) return
+    console.log('TasksStore: createTask called with:', taskData)
+    console.log('TasksStore: Current username:', authStore.username)
+    console.log('TasksStore: Current userId:', authStore.userId)
+    
+    if (!authStore.username) {
+      console.error('TasksStore: No username available, cannot create task')
+      return
+    }
 
     try {
       isLoading.value = true
       error.value = null
-      await databaseService.createTask(authStore.username, {
+      
+      const taskToCreate = {
         userId: authStore.userId,
         ...taskData
-      })
+      }
+      
+      console.log('TasksStore: Calling databaseService.createTask with:', taskToCreate)
+      
+      const result = await databaseService.createTask(authStore.username, taskToCreate)
+      console.log('TasksStore: Database createTask result:', result)
+      
+      console.log('TasksStore: Reloading tasks...')
       await loadTasks()
+      console.log('TasksStore: Tasks reloaded, current tasks count:', tasks.value.length)
     } catch (err) {
       error.value = err.message
-      console.error('Error creating task:', err)
+      console.error('TasksStore: Error creating task:', err)
     } finally {
       isLoading.value = false
     }

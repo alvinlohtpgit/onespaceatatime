@@ -3,7 +3,7 @@
     <div class="header-content">
       <div class="brand">
         <i class="pi pi-check-square brand-icon"></i>
-        <h1 class="brand-name">One Space At a Time</h1>
+        <h1 class="brand-name">One Thing at a Time</h1>
       </div>
       <div class="header-actions">
         <Button 

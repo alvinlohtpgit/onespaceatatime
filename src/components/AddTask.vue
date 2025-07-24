@@ -156,21 +156,27 @@ const validateForm = () => {
 const handleSubmit = async () => {
   if (!validateForm()) return
   
+  console.log('AddTask: Starting task creation process')
   isLoading.value = true
   
   try {
-    await tasksStore.createTask({
+    const taskToCreate = {
       title: taskData.value.title.trim(),
       notes: taskData.value.notes.trim(),
       nextAction: taskData.value.nextAction.trim(),
       whyItMatters: taskData.value.whyItMatters.trim(),
       priority: taskData.value.priority,
       estimatedDuration: taskData.value.estimatedDuration
-    })
+    }
     
+    console.log('AddTask: Creating task with data:', taskToCreate)
+    
+    await tasksStore.createTask(taskToCreate)
+    
+    console.log('AddTask: Task created successfully')
     resetForm()
   } catch (error) {
-    console.error('Error creating task:', error)
+    console.error('AddTask: Error creating task:', error)
   } finally {
     isLoading.value = false
   }
