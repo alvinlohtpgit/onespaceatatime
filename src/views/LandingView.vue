@@ -7,8 +7,9 @@
           <h2>One Thing at a Time</h2>
         </div>
         <div class="nav-links">
-          <router-link to="/login" class="nav-link">Login</router-link>
-          <router-link to="/register" class="btn-nav-cta">Start Free Trial</router-link>
+          <router-link v-if="!isLoggedIn" to="/login" class="nav-link">Login</router-link>
+          <router-link v-if="isLoggedIn" to="/dashboard" class="nav-link">My Dashboard</router-link>
+          <router-link v-if="!isLoggedIn" to="/register" class="btn-nav-cta">Start Free Trial</router-link>
         </div>
       </div>
     </nav>
@@ -28,10 +29,13 @@
               One Thing at a Time is the only task manager designed to protect your focus, not fragment it.
             </p>
             <div class="hero-cta">
-              <router-link to="/register" class="btn btn-primary btn-large">
+              <router-link v-if="!isLoggedIn" to="/register" class="btn btn-primary btn-large">
                 Start Your 14-Day Free Trial
               </router-link>
-              <p class="trial-note">No credit card required • Cancel anytime</p>
+              <router-link v-if="isLoggedIn" to="/dashboard" class="btn btn-primary btn-large">
+                Go to Dashboard
+              </router-link>
+              <p v-if="!isLoggedIn" class="trial-note">No credit card required • Cancel anytime</p>
             </div>
           </div>
           <div class="hero-visual">
@@ -260,7 +264,20 @@
 </template>
 
 <script setup>
-// Landing page - no logic needed
+import { computed, onMounted, ref } from 'vue'
+import { useAuthStore } from '@/stores/auth'
+
+const authStore = useAuthStore()
+const isAuthenticated = ref(false)
+
+// Check authentication status on mount
+onMounted(async () => {
+  await authStore.checkAuth()
+  isAuthenticated.value = authStore.isAuthenticated
+})
+
+// Watch for auth changes
+const isLoggedIn = computed(() => authStore.isAuthenticated)
 </script>
 
 <style scoped>
