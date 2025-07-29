@@ -197,9 +197,9 @@
           <h2 class="section-title">Simple pricing for focused minds</h2>
           <div class="pricing-cards">
             <div class="pricing-card">
-              <h3>Personal</h3>
+              <h3>Monthly</h3>
               <div class="price">
-                <span class="amount">$8</span>
+                <span class="amount">$5</span>
                 <span class="period">/month</span>
               </div>
               <ul class="features-list">
@@ -209,28 +209,31 @@
                 <li>✓ AI task recommendations</li>
                 <li>✓ Offline sync</li>
                 <li>✓ All future features</li>
+                <li>✓ Priority support</li>
               </ul>
               <router-link to="/register" class="btn btn-primary btn-full">
                 Start 14-Day Free Trial
               </router-link>
             </div>
             <div class="pricing-card featured">
-              <div class="badge">MOST POPULAR</div>
-              <h3>Team</h3>
+              <div class="badge">SAVE 17%</div>
+              <h3>Annual</h3>
               <div class="price">
-                <span class="amount">$6</span>
-                <span class="period">/user/month</span>
+                <span class="amount">$50</span>
+                <span class="period">/year</span>
+              </div>
+              <div class="price-compare">
+                <span class="monthly-equivalent">That's only $4.17/month</span>
               </div>
               <ul class="features-list">
-                <li>✓ Everything in Personal</li>
-                <li>✓ Team focus analytics</li>
-                <li>✓ Shared focus sessions</li>
-                <li>✓ Admin dashboard</li>
-                <li>✓ Priority support</li>
-                <li>✓ SSO integration</li>
+                <li>✓ Everything in Monthly</li>
+                <li>✓ Save $10 per year</li>
+                <li>✓ Pay once, focus all year</li>
+                <li>✓ Same 14-day trial period</li>
+                <li>✓ Full refund within 30 days</li>
               </ul>
               <router-link to="/register" class="btn btn-primary btn-full">
-                Start Team Trial
+                Start 14-Day Free Trial
               </router-link>
             </div>
           </div>
@@ -812,6 +815,17 @@ const isLoggedIn = computed(() => authStore.isAuthenticated)
 
 .period {
   color: #999999;
+}
+
+.price-compare {
+  margin-top: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.monthly-equivalent {
+  color: #666666;
+  font-size: 0.9rem;
+  font-style: italic;
 }
 
 .features-list {
