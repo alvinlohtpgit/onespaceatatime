@@ -66,8 +66,10 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, ref, watchEffect, onUnmounted } from 'vue'
 import { useTasksStore } from '@/stores/tasks'
+import { useTimerStore } from '@/stores/timer'
+import { useSettingsStore } from '@/stores/settings'
 import { useToast } from 'primevue/usetoast'
 import Card from 'primevue/card'
 import Button from 'primevue/button'
@@ -78,6 +80,7 @@ const emit = defineEmits(['edit-task'])
 const tasksStore = useTasksStore()
 const toast = useToast()
 const currentTask = computed(() => tasksStore.currentTask)
+const popoutWindow = ref(null)
 
 const completeCurrentTask = async () => {
   if (currentTask.value) {
@@ -105,8 +108,12 @@ const handleSplitTask = (task) => {
 const openPopout = () => {
   if (!currentTask.value) return
   
+  // Import timer and settings stores
+  const timerStore = useTimerStore()
+  const settingsStore = useSettingsStore()
+  
   // Create a minimal popout window
-  const popoutFeatures = 'width=400,height=600,toolbar=no,menubar=no,location=no,status=no,scrollbars=yes'
+  const popoutFeatures = 'width=400,height=700,toolbar=no,menubar=no,location=no,status=no,scrollbars=yes'
   const popout = window.open('', 'taskPopout', popoutFeatures)
   
   if (popout) {
@@ -163,10 +170,45 @@ const openPopout = () => {
           .close-button:hover {
             background: #ff9500;
           }
+          .timer-section {
+            background: rgba(255, 169, 10, 0.1);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 2rem;
+            text-align: center;
+            display: none;
+          }
+          .timer-phase {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #ffa90a;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+          }
+          .timer-display {
+            font-size: 3rem;
+            font-weight: 300;
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+            letter-spacing: 0.1em;
+            color: #262626;
+            margin-bottom: 1rem;
+          }
+          .timer-status {
+            font-size: 0.85rem;
+            color: #666;
+          }
         </style>
       </head>
       <body>
         <button class="close-button" onclick="window.close()">Close</button>
+        
+        <div class="timer-section" id="timerSection">
+          <div class="timer-phase" id="timerPhase">Focus Time</div>
+          <div class="timer-display" id="timerDisplay">00:00</div>
+          <div class="timer-status" id="timerStatus">Timer not running</div>
+        </div>
+        
         <h1 class="task-title">${currentTask.value.title}</h1>
         ${currentTask.value.nextAction ? `
           <div class="task-section">
@@ -186,12 +228,101 @@ const openPopout = () => {
             <p>${currentTask.value.notes}</p>
           </div>
         ` : ''}
+        
+        <scr` + `ipt>
+          // Timer state
+          let timerState = ${JSON.stringify({
+            isActive: timerStore.timerState.isActive,
+            isPaused: timerStore.timerState.isPaused,
+            currentPhase: timerStore.timerState.currentPhase,
+            timeRemaining: timerStore.timerState.timeRemaining,
+            isPomodoroEnabled: settingsStore.isPomodoroEnabled
+          })};
+          
+          // Update timer display
+          function updateTimerDisplay() {
+            const timerSection = document.getElementById('timerSection');
+            const timerPhase = document.getElementById('timerPhase');
+            const timerDisplay = document.getElementById('timerDisplay');
+            const timerStatus = document.getElementById('timerStatus');
+            
+            if (!timerState.isPomodoroEnabled) {
+              timerSection.style.display = 'none';
+              return;
+            }
+            
+            timerSection.style.display = 'block';
+            
+            // Update phase
+            if (timerState.currentPhase === 'work') {
+              timerPhase.textContent = 'Focus Time';
+            } else if (timerState.currentPhase === 'shortBreak') {
+              timerPhase.textContent = 'Short Break';
+            } else {
+              timerPhase.textContent = 'Long Break';
+            }
+            
+            // Update time
+            const minutes = Math.floor(timerState.timeRemaining / 60);
+            const seconds = timerState.timeRemaining % 60;
+            timerDisplay.textContent = minutes.toString().padStart(2, '0') + ':' + seconds.toString().padStart(2, '0');
+            
+            // Update status
+            if (!timerState.isActive) {
+              timerStatus.textContent = 'Timer not running';
+            } else if (timerState.isPaused) {
+              timerStatus.textContent = 'Timer paused';
+            } else {
+              timerStatus.textContent = 'Timer running';
+            }
+          }
+          
+          // Listen for timer updates from parent window
+          window.addEventListener('message', function(event) {
+            if (event.data && event.data.type === 'timerUpdate') {
+              timerState = event.data.state;
+              updateTimerDisplay();
+            }
+          });
+          
+          // Initial display
+          updateTimerDisplay();
+        </scr` + `ipt>
       </body>
       </html>
     `)
     popout.document.close()
+    
+    // Store reference to popout window for updates
+    popoutWindow.value = popout
   }
 }
+
+// Watch timer changes and send updates to popout window
+watchEffect(() => {
+  if (popoutWindow.value && !popoutWindow.value.closed) {
+    const timerStore = useTimerStore()
+    const settingsStore = useSettingsStore()
+    
+    popoutWindow.value.postMessage({
+      type: 'timerUpdate',
+      state: {
+        isActive: timerStore.timerState.isActive,
+        isPaused: timerStore.timerState.isPaused,
+        currentPhase: timerStore.timerState.currentPhase,
+        timeRemaining: timerStore.timerState.timeRemaining,
+        isPomodoroEnabled: settingsStore.isPomodoroEnabled
+      }
+    }, '*')
+  }
+})
+
+// Clean up on unmount
+onUnmounted(() => {
+  if (popoutWindow.value && !popoutWindow.value.closed) {
+    popoutWindow.value.close()
+  }
+})
 </script>
 
 <style scoped>
