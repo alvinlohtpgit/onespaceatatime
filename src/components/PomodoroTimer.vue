@@ -21,8 +21,15 @@
           <Tag :value="phaseLabel" :severity="phaseSeverity" />
         </div>
         
-        <div class="timer-time">
-          {{ timerStore.formattedTime }}
+        <div class="timer-main">
+          <div class="timer-time">
+            {{ timerStore.formattedTime }}
+          </div>
+          
+          <HourglassSandAnimation 
+            :is-running="timerStore.isRunning"
+            :progress="timerProgress"
+          />
         </div>
         
         <div class="timer-controls">
@@ -79,6 +86,7 @@ import Card from 'primevue/card'
 import Button from 'primevue/button'
 import Tag from 'primevue/tag'
 import TimerSettingsDialog from './TimerSettingsDialog.vue'
+import HourglassSandAnimation from './HourglassSandAnimation.vue'
 
 const props = defineProps({
   currentTaskId: {
@@ -105,6 +113,21 @@ const phaseSeverity = computed(() => {
   if (phase === 'work') return 'danger'
   if (phase === 'shortBreak') return 'warning'
   return 'success'
+})
+
+const timerProgress = computed(() => {
+  const phase = timerStore.timerState.currentPhase
+  const settings = settingsStore.pomodoroSettings
+  
+  let totalDuration = settings.workDuration * 60
+  if (phase === 'shortBreak') {
+    totalDuration = settings.shortBreak * 60
+  } else if (phase === 'longBreak') {
+    totalDuration = settings.longBreak * 60
+  }
+  
+  const elapsed = totalDuration - timerStore.timerState.timeRemaining
+  return elapsed / totalDuration
 })
 
 const handleStart = () => {
@@ -199,12 +222,19 @@ onUnmounted(() => {
   margin-bottom: 1.5rem;
 }
 
+.timer-main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
 .timer-time {
   font-size: 4rem;
   font-weight: 300;
   color: var(--text-primary);
   font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
-  margin-bottom: 2rem;
   letter-spacing: 0.1em;
 }
 
@@ -246,6 +276,11 @@ onUnmounted(() => {
 }
 
 @media (max-width: 768px) {
+  .timer-main {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
   .timer-time {
     font-size: 3rem;
   }

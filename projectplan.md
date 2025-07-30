@@ -250,3 +250,53 @@ The implementation has successfully transformed the Vue 3 template into a fully-
    - Dark mode theme option
 
 The application is now production-ready with a solid foundation for future enhancements.
+
+## Animated Hourglass for Pomodoro Timer
+
+### Overview
+Add an animated hourglass visualization to the pomodoro timer that shows sand flowing continuously from top to bottom while the timer is running. The animation should pause when the timer is paused.
+
+### Plan
+
+#### Todo Items
+- [x] Create HourglassSandAnimation component with SVG-based hourglass design
+- [x] Implement animated sand particles falling randomly from top to bottom
+- [x] Sync animation state with timer pause/resume functionality
+- [x] Integrate hourglass component into PomodoroTimer.vue layout
+- [x] Add smooth transitions for sand accumulation at the bottom
+
+#### Technical Approach
+1. Create a new Vue component `HourglassSandAnimation.vue` that uses SVG for the hourglass shape
+2. Use CSS animations and Vue's reactive properties to create falling sand particles
+3. Generate random positions for sand particles as they fall
+4. Control animation playback based on timer state (running/paused)
+5. Display the hourglass beside the timer display in the existing layout
+
+#### Implementation Details
+- Use SVG for the hourglass container shape
+- Create multiple small sand particles that animate independently
+- Use Vue's `v-for` to generate multiple sand particles
+- Apply CSS transforms and animations for the falling effect
+- Use `animation-play-state` CSS property to pause/resume animations
+- Sync with the timer store's `isRunning` computed property
+
+### Review
+
+#### Implementation Summary
+Successfully created an animated hourglass component that enhances the pomodoro timer with visual feedback:
+
+1. **SVG-Based Design**: Created a clean hourglass shape using SVG paths with proper clipping masks
+2. **Dynamic Sand Animation**: Implemented multiple falling sand particles with random positions and velocities
+3. **Progress Visualization**: Sand levels in top and bottom chambers adjust based on timer progress
+4. **Pause/Resume Sync**: Animation state perfectly syncs with timer running state using props
+5. **Responsive Layout**: Hourglass scales appropriately on mobile devices
+
+#### Technical Details
+- Used `requestAnimationFrame` for smooth particle animations
+- Sand particles have randomized horizontal drift for realistic falling effect
+- Bottom sand accumulates with a curved surface for visual appeal
+- Continuous sand stream effect when timer is running
+- All animations pause when timer is paused, maintaining state
+
+#### Integration
+The hourglass is displayed beside the timer display, providing an intuitive visual representation of time passing. The component is fully integrated with the existing timer store and responds to all timer state changes.
